@@ -37,9 +37,9 @@ AM.window_count = function(expected)
   assert.equals(expected, actual, msg)
 end
 
-AM.line_number = function(expected)
-  local actual = vim.fn.line(".")
-  local msg = string.format("line number should be %s, but actual: %s", expected, actual)
+AM.current_line = function(expected)
+  local actual = vim.fn.getline(".")
+  local msg = string.format("current line should be %s, but actual: %s", expected, actual)
   assert.equals(expected, actual, msg)
 end
 
