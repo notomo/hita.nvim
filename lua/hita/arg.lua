@@ -10,6 +10,13 @@ M.parse = function(raw_args)
     return args
   end
 
+  for _, a in ipairs(raw_args) do
+    if not vim.startswith(a, "--") then
+      args.source_name = a
+      break
+    end
+  end
+
   return args
 end
 

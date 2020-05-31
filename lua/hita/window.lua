@@ -13,8 +13,13 @@ local close_window = function(id)
 end
 
 M.open = function(source)
+  if #source.positions == 0 then
+    return
+  end
+
   local bufnr = vim.api.nvim_create_buf(false, true)
   local cursor = vim.api.nvim_win_get_cursor(0)
+
   local id =
     vim.api.nvim_open_win(
     bufnr,
@@ -23,7 +28,6 @@ M.open = function(source)
       width = source.width,
       height = source.height,
       relative = source.relative,
-      win = source.window,
       row = source.row,
       col = source.column,
       external = false,
@@ -57,7 +61,7 @@ M.open = function(source)
       vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
     end
     local rhs = string.format(":<C-u>lua require 'hita/window'.callback('%s')<CR>", char)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", char, rhs, {noremap = true, nowait = true})
+    vim.api.nvim_buf_set_keymap(bufnr, "n", char, rhs, {noremap = true, nowait = true, silent = true})
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
