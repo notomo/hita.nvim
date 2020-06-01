@@ -50,7 +50,7 @@ M.open = function(source)
     local row = pos.row - source.offset
     local replaced = lines[row]
     if pos.column > 1 then
-      lines[row] = replaced:sub(1, pos.column - 1) .. char .. replaced:sub(pos.column + 1, -1)
+      lines[row] = replaced:sub(1, pos.column) .. char .. replaced:sub(pos.column + 1, -1)
     else
       lines[row] = char .. replaced:sub(2, -1)
     end

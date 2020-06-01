@@ -82,4 +82,17 @@ test2]])
     assert.current_line("test2")
   end)
 
+  it("line", function()
+    helper.set_lines("123_456_789")
+
+    command("Hita line")
+
+    assert.window_count(2)
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_char("4")
+  end)
+
 end)
