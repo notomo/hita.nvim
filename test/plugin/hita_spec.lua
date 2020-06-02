@@ -95,4 +95,19 @@ test2]])
     assert.current_char("4")
   end)
 
+  it("two chars", function()
+    require "hita/window".chars = "abc"
+    helper.set_lines("1_2_3_4")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.current_line_startswith("  a b ca")
+
+    helper.input_key("ca")
+
+    assert.window_count(1)
+    assert.current_char("4")
+  end)
+
 end)

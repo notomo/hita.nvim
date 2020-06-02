@@ -12,6 +12,35 @@ local close_window = function(id)
   vim.api.nvim_win_close(id, true)
 end
 
+local target_chars = function(chars, positions_count)
+  local char_count = #chars
+  local remaining = positions_count - char_count
+
+  local all_chars = vim.split(chars, "")
+  if remaining < 0 then
+    return all_chars
+  end
+
+  local pair_count = math.floor(remaining / char_count + 1)
+  local single_chars = chars:sub(0, -pair_count - 1)
+
+  local results = {}
+  if single_chars ~= "" then
+    results = vim.split(single_chars, "")
+  end
+
+  local pair_chars = chars:sub(-pair_count, -1)
+  for _, head_char in ipairs(vim.split(pair_chars, "")) do
+    for _, char in ipairs(all_chars) do
+      table.insert(results, head_char .. char)
+    end
+  end
+
+  return results
+end
+
+M.chars = "asdghklqwertyuopzxcvbnmf;,./0"
+
 M.open = function(source)
   if #source.positions == 0 then
     return
@@ -35,15 +64,15 @@ M.open = function(source)
     }
   )
 
-  local chars = "asdghklqwertyuopzxcvbnmf;,./0"
+  local chars = target_chars(M.chars, #source.positions)
 
   callbacks = {}
 
-  local line = vim.fn["repeat"](" ", source.width)
+  local line = (" "):rep(source.width)
   local lines = vim.fn["repeat"]({line}, source.height)
   for i, pos in ipairs(source.positions) do
-    local char = chars:sub(i, i)
-    if char == "" then
+    local char = chars[i]
+    if char == nil then
       break
     end
 
