@@ -127,4 +127,35 @@ test3]])
     assert.current_line("test1")
   end)
 
+  it("search", function()
+    helper.set_lines([[
+
+test1
+test2
+test3]])
+    command("/test")
+
+    command("Hita search")
+
+    assert.window_count(2)
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_line("test2")
+  end)
+
+  it("search empty", function()
+    helper.set_lines([[
+
+test1
+test2
+test3]])
+    command("let @/ = ''")
+
+    command("Hita search")
+
+    assert.window_count(1)
+  end)
+
 end)
