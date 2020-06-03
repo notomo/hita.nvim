@@ -110,4 +110,21 @@ test2]])
     assert.current_char("4")
   end)
 
+  it("window_word", function()
+    helper.set_lines([[
+test1
+test2
+test3]])
+    command("normal! j")
+
+    command("Hita window_word")
+
+    assert.window_count(2)
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_line("test1")
+  end)
+
 end)
