@@ -17,11 +17,11 @@ M.after_each = function()
   M.command("silent! %bwipeout!")
   M.command("filetype off")
   M.command("syntax off")
-  print("\n \n")
+  print(" ")
 end
 
 M.input_key = function(key)
-  vim.api.nvim_feedkeys(key, "xt", false)
+  M.command("normal " .. key)
 end
 
 M.set_lines = function(lines)
