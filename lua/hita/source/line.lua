@@ -1,6 +1,8 @@
-return function(args)
-  local window = args.window
-  local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(window))
+local util = require "hita/util"
+
+return function(_)
+  local window = util.current_window()
+  local cursor = window.cursor()
   local line = vim.api.nvim_get_current_line()
 
   local positions = {}
@@ -10,22 +12,21 @@ return function(args)
     local match_start, match_end = line:find("%w+", index)
     if match_start ~= nil then
       local column = match_start - 1
-      if cursor_col ~= column then
-        table.insert(positions, {row = cursor_line, column = column})
+      if cursor.column ~= column then
+        table.insert(positions, {row = cursor.line, column = column})
       end
       index = match_end + 1
     end
   until match_start == nil
 
-  local column = vim.wo.numberwidth + 2
   return {
-    width = vim.api.nvim_win_get_width(window) - column,
+    width = window.width,
     height = 1,
     relative = "cursor",
     row = 0,
-    column = -cursor_col,
-    window = window,
+    column = -cursor.column,
+    window = window.id,
     positions = positions,
-    offset = cursor_line - 1
+    offset = cursor.line - 1
   }
 end

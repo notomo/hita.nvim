@@ -1,21 +1,19 @@
-return function(args)
-  local window = args.window
+local util = require "hita/util"
 
-  local cursor_line, cursor_col = unpack(vim.api.nvim_win_get_cursor(window))
-
-  local first_line = vim.fn.line("w0")
-  local last_line = vim.fn.line("w$")
+return function(_)
+  local window = util.current_window()
+  local cursor = window.cursor()
 
   local searched = vim.fn.getreg("/")
   local pattern = vim.regex(searched)
 
   local positions = {}
-  for _, line in ipairs(vim.fn.range(first_line, last_line)) do
+  for _, line in ipairs(window.line_numbers()) do
     local index = 0
     repeat
       local start, e = pattern:match_line(0, line - 1, index)
       if start ~= nil and start ~= e then
-        if not (cursor_col == index + start and cursor_line == line) then
+        if not (cursor.column == index + start and cursor.line == line) then
           table.insert(positions, {row = line, column = index + start})
         end
         index = index + start + 1
@@ -23,15 +21,14 @@ return function(args)
     until start == nil or start == e
   end
 
-  local column = vim.wo.numberwidth + 2
   return {
-    width = vim.api.nvim_win_get_width(window) - column,
-    height = vim.api.nvim_win_get_height(window),
+    width = window.width,
+    height = window.height,
     relative = "win",
     row = 0,
-    column = column,
-    window = window,
+    column = window.column,
+    window = window.id,
     positions = positions,
-    offset = first_line - 1
+    offset = window.first_line - 1
   }
 end

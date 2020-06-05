@@ -1,17 +1,16 @@
-return function(args)
-  local window = args.window
+local util = require "hita/util"
 
-  local cursor_line, _ = unpack(vim.api.nvim_win_get_cursor(window))
+return function(_)
+  local window = util.current_window()
+  local cursor = window.cursor()
 
   local upsides = {}
-  local first_line = vim.fn.line("w0")
-  for _, row in ipairs(vim.fn.range(cursor_line - 1, first_line, -1)) do
+  for _, row in ipairs(vim.fn.range(cursor.line - 1, window.first_line, -1)) do
     table.insert(upsides, {row = row, column = 0})
   end
 
   local downsides = {}
-  local last_line = vim.fn.line("w$")
-  for _, row in ipairs(vim.fn.range(cursor_line + 1, last_line)) do
+  for _, row in ipairs(vim.fn.range(cursor.line + 1, window.last_line)) do
     table.insert(downsides, {row = row, column = 0})
   end
 
@@ -31,15 +30,14 @@ return function(args)
     end
   end
 
-  local column = vim.wo.numberwidth + 2
   return {
-    width = vim.api.nvim_win_get_width(window) - column,
-    height = vim.api.nvim_win_get_height(window),
+    width = window.width,
+    height = window.height,
     relative = "win",
     row = 0,
-    column = column,
-    window = window,
+    column = window.column,
+    window = window.id,
     positions = positions,
-    offset = first_line - 1
+    offset = window.first_line - 1
   }
 end

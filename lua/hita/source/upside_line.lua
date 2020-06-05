@@ -1,22 +1,22 @@
-return function(args)
-  local window = args.window
+local util = require "hita/util"
+
+return function(_)
+  local window = util.current_window()
+  local cursor = window.cursor()
 
   local positions = {}
-  local cursor_line, _ = unpack(vim.api.nvim_win_get_cursor(window))
-  local first_line = vim.fn.line("w0")
-  for _, row in ipairs(vim.fn.range(cursor_line - 1, first_line, -1)) do
+  for _, row in ipairs(vim.fn.range(cursor.line - 1, window.first_line, -1)) do
     table.insert(positions, {row = row, column = 0})
   end
 
-  local column = vim.wo.numberwidth + 2
   return {
-    width = vim.api.nvim_win_get_width(window) - column,
-    height = cursor_line - first_line + 1,
+    width = window.width,
+    height = cursor.line - window.first_line + 1,
     relative = "win",
     row = 0,
-    column = column,
-    window = window,
+    column = window.column,
+    window = window.id,
     positions = positions,
-    offset = first_line - 1
+    offset = window.first_line - 1
   }
 end
