@@ -31,6 +31,7 @@ return function(_)
   end
 
   return {
+    cursor = cursor,
     width = window.width,
     height = window.height,
     relative = "win",

@@ -10,6 +10,7 @@ return function(_)
   end
 
   return {
+    cursor = cursor,
     width = window.width,
     height = cursor.row - window.first_row + 1,
     relative = "win",

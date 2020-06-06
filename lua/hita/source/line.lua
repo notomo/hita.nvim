@@ -20,6 +20,7 @@ return function(_)
   util.remove_cursor_position(positions, cursor)
 
   return {
+    cursor = cursor,
     width = window.width,
     height = 1,
     relative = "cursor",
