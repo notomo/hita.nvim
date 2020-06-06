@@ -3,7 +3,7 @@ local util = require "hita/util"
 return function(_)
   local window = util.current_window()
   local cursor = window.cursor()
-  local line = vim.api.nvim_get_current_line()
+  local line = window.get_current_line()
 
   local positions = {}
 

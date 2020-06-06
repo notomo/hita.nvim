@@ -5,18 +5,26 @@ M.current_window = function()
   local column = vim.wo.numberwidth + 2
   local first_line = vim.fn.line("w0")
   local last_line = vim.fn.line("w$")
+  local width = vim.api.nvim_win_get_width(id) - column
   return {
     first_line = first_line,
     last_line = last_line,
-    width = vim.api.nvim_win_get_width(id) - column,
+    width = width,
     height = vim.api.nvim_win_get_height(id),
     column = vim.api.nvim_win_get_width(id) - column,
     id = id,
     lines = function()
-      return vim.api.nvim_buf_get_lines(0, first_line - 1, last_line, true)
+      local lines = {}
+      for _, l in ipairs(vim.api.nvim_buf_get_lines(0, first_line - 1, last_line, true)) do
+        table.insert(lines, l:sub(0, width))
+      end
+      return lines
     end,
     line_numbers = function()
       return vim.fn.range(first_line, last_line)
+    end,
+    get_current_line = function()
+      return (vim.api.nvim_get_current_line()):sub(0, width)
     end,
     cursor = function()
       local line, col = unpack(vim.api.nvim_win_get_cursor(id))

@@ -11,6 +11,7 @@ return function(_)
   for _, line in ipairs(window.line_numbers()) do
     local index = 0
     repeat
+      -- TODO: match_line(0, line - 1, index, window.width) with avoiding `invalid end`
       local start, e = pattern:match_line(0, line - 1, index)
       if start ~= nil and start ~= e then
         table.insert(positions, {row = line, column = index + start})
