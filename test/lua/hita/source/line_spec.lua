@@ -21,7 +21,7 @@ describe('line source', function ()
   end)
 
   it("can handle two characters target", function()
-    require "hita/window".chars = "abc"
+    require "hita/hint".chars = "abc"
     helper.set_lines("1_2_3_4")
 
     command("Hita line")

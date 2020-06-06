@@ -41,7 +41,7 @@ end
 
 M.chars = "asdghklqwertyuopzxcvbnmf;,./0"
 
-M.open = function(source)
+M.start = function(source)
   if #source.positions == 0 then
     return
   end
@@ -89,7 +89,7 @@ M.open = function(source)
       vim.api.nvim_set_current_win(source.window)
       vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
     end
-    local rhs = string.format(":<C-u>lua require 'hita/window'.callback('%s')<CR>", char)
+    local rhs = string.format(":<C-u>lua require 'hita/hint'.callback('%s')<CR>", char)
     vim.api.nvim_buf_set_keymap(bufnr, "n", char, rhs, {noremap = true, nowait = true, silent = true})
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
