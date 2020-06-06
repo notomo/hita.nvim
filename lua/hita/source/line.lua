@@ -12,7 +12,7 @@ return function(_)
     local match_start, match_end = line:find("%w+", index)
     if match_start ~= nil then
       local column = match_start - 1
-      table.insert(positions, {row = cursor.line, column = column})
+      table.insert(positions, {row = cursor.row, column = column})
       index = match_end + 1
     end
   until match_start == nil
@@ -27,6 +27,6 @@ return function(_)
     column = -cursor.column,
     window = window.id,
     positions = positions,
-    offset = cursor.line - 1
+    offset = cursor.row - 1
   }
 end

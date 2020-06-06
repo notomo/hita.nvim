@@ -5,12 +5,12 @@ return function(_)
   local cursor = window.cursor()
 
   local upsides = {}
-  for _, row in ipairs(vim.fn.range(cursor.line - 1, window.first_line, -1)) do
+  for _, row in ipairs(vim.fn.range(cursor.row - 1, window.first_row, -1)) do
     table.insert(upsides, {row = row, column = 0})
   end
 
   local downsides = {}
-  for _, row in ipairs(vim.fn.range(cursor.line + 1, window.last_line)) do
+  for _, row in ipairs(vim.fn.range(cursor.row + 1, window.last_row)) do
     table.insert(downsides, {row = row, column = 0})
   end
 
@@ -38,6 +38,6 @@ return function(_)
     column = window.column,
     window = window.id,
     positions = positions,
-    offset = window.first_line - 1
+    offset = window.first_row - 1
   }
 end

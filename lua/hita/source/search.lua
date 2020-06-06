@@ -8,13 +8,13 @@ return function(_)
   local pattern = vim.regex(searched)
 
   local positions = {}
-  for _, line in ipairs(window.line_numbers()) do
+  for _, row in ipairs(window.rows()) do
     local index = 0
     repeat
-      -- TODO: match_line(0, line - 1, index, window.width) with avoiding `invalid end`
-      local start, e = pattern:match_line(0, line - 1, index)
+      -- TODO: match_line(0, row - 1, index, window.width) with avoiding `invalid end`
+      local start, e = pattern:match_line(0, row - 1, index)
       if start ~= nil and start ~= e then
-        table.insert(positions, {row = line, column = index + start})
+        table.insert(positions, {row = row, column = index + start})
         index = index + start + 1
       end
     until start == nil or start == e
@@ -30,6 +30,6 @@ return function(_)
     column = window.column,
     window = window.id,
     positions = positions,
-    offset = window.first_line - 1
+    offset = window.first_row - 1
   }
 end
