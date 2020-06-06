@@ -20,7 +20,7 @@ return function(_)
     until start == nil or start == e
   end
 
-  util.remove_cursor_position(positions, cursor)
+  util.remove_position(positions, cursor)
 
   return {
     cursor = cursor,

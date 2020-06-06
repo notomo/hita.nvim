@@ -36,9 +36,9 @@ M.current_window = function()
   }
 end
 
-M.remove_cursor_position = function(positions, cursor)
+M.remove_position = function(positions, removed)
   for i, pos in ipairs(positions) do
-    if pos.row == cursor.row and pos.column == cursor.column then
+    if pos.row == removed.row and pos.column == removed.column then
       table.remove(positions, i)
       return
     end

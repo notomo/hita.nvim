@@ -12,7 +12,7 @@ return function(_)
     row = row + 1
   end
 
-  util.remove_cursor_position(positions, cursor)
+  util.remove_position(positions, cursor)
 
   return {
     cursor = cursor,

@@ -6,7 +6,7 @@ return function(_)
   local line = window.get_current_line()
 
   local positions = util.matched_positions(line, "%w+", cursor.row)
-  util.remove_cursor_position(positions, cursor)
+  util.remove_position(positions, cursor)
 
   return {
     cursor = cursor,
