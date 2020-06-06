@@ -2,7 +2,16 @@ local M = {}
 
 M.current_window = function()
   local id = 0
-  local column = vim.wo.numberwidth + 2
+
+  local row, col = unpack(vim.api.nvim_win_get_cursor(id))
+  local vcol = vim.fn.virtcol(".")
+  local cursor = {
+    row = row,
+    column = col,
+    virtual_column = vcol - 1
+  }
+  local column = vim.fn.wincol() - vcol
+
   local first_row = vim.fn.line("w0")
   local last_row = vim.fn.line("w$")
   local width = vim.api.nvim_win_get_width(id) - column
@@ -26,13 +35,7 @@ M.current_window = function()
     get_current_line = function()
       return (vim.api.nvim_get_current_line()):sub(0, width)
     end,
-    cursor = function()
-      local row, col = unpack(vim.api.nvim_win_get_cursor(id))
-      return {
-        row = row,
-        column = col
-      }
-    end
+    cursor = cursor
   }
 end
 

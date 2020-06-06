@@ -103,7 +103,7 @@ M.start = function(source)
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
 
   local cursor = source.cursor
-  vim.api.nvim_win_set_cursor(id, {cursor.row - source.offset, cursor.column})
+  vim.api.nvim_win_set_cursor(id, {cursor.row - source.offset, cursor.virtual_column})
   vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaTarget")
   vim.api.nvim_win_set_option(id, "winblend", 40)
   vim.api.nvim_win_set_option(id, "scrolloff", 0)

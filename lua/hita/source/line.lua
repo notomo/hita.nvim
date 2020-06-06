@@ -2,7 +2,7 @@ local util = require "hita/util"
 
 return function(_)
   local window = util.current_window()
-  local cursor = window.cursor()
+  local cursor = window.cursor
   local line = window.get_current_line()
 
   local positions = util.matched_positions(line, "%w+", cursor.row)

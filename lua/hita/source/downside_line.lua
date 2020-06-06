@@ -2,7 +2,7 @@ local util = require "hita/util"
 
 return function(_)
   local window = util.current_window()
-  local cursor = window.cursor()
+  local cursor = window.cursor
 
   local positions = {}
   for _, row in ipairs(vim.fn.range(cursor.row + 1, window.last_row)) do

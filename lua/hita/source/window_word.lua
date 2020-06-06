@@ -2,7 +2,7 @@ local util = require "hita/util"
 
 return function(_)
   local window = util.current_window()
-  local cursor = window.cursor()
+  local cursor = window.cursor
 
   local positions = {}
   local row = window.first_row
