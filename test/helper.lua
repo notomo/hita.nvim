@@ -28,6 +28,10 @@ M.set_lines = function(lines)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(lines, "\n"))
 end
 
+M.cursor = function()
+  return {vim.fn.line("."), vim.fn.col(".")}
+end
+
 local assert = require("luassert")
 local AM = {}
 
@@ -54,6 +58,12 @@ AM.current_char = function(expected)
   local actual = vim.fn.getline("."):sub(col, col)
   local msg = string.format("current char should be %s, but actual: %s", expected, actual)
   assert.equals(expected, actual, msg)
+end
+
+AM.cursor = function(expected)
+  local actual = M.cursor()
+  local msg = string.format("cursor positon should be %s, but actual: %s", expected, actual)
+  assert.same(expected, actual, msg)
 end
 
 M.assert = AM

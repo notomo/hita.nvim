@@ -40,6 +40,7 @@ local make_targets = function(chars, positions_count)
 end
 
 M.chars = "asdghklqwertyuopzxcvbnmf;,./0"
+M.cancel_key = "jj"
 
 M.start = function(source)
   if #source.positions == 0 then
@@ -87,9 +88,16 @@ M.start = function(source)
       vim.api.nvim_set_current_win(source.window)
       vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
     end
-    local rhs = string.format(":<C-u>lua require 'hita/hint'.callback('%s')<CR>", target)
+    local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(target)
     vim.api.nvim_buf_set_keymap(bufnr, "n", target, rhs, {noremap = true, nowait = true, silent = true})
   end
+
+  callbacks[M.cancel_key] = function()
+    close_window(id)
+  end
+  local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(M.cancel_key)
+  vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
+
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)

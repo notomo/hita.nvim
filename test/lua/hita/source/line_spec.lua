@@ -35,4 +35,19 @@ describe('line source', function ()
     assert.current_char("4")
   end)
 
+  it("can be canceled", function()
+    helper.set_lines("1_2_3_4")
+
+    local cursor = helper.cursor()
+
+    command("Hita line")
+
+    assert.window_count(2)
+
+    helper.input_key("jj")
+
+    assert.window_count(1)
+    assert.cursor(cursor)
+  end)
+
 end)
