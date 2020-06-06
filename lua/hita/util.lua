@@ -28,4 +28,13 @@ M.current_window = function()
   }
 end
 
+M.remove_cursor_position = function(positions, cursor)
+  for i, pos in ipairs(positions) do
+    if pos.row == cursor.line and pos.column == cursor.column then
+      table.remove(positions, i)
+      return
+    end
+  end
+end
+
 return M

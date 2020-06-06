@@ -13,13 +13,13 @@ return function(_)
     repeat
       local start, e = pattern:match_line(0, line - 1, index)
       if start ~= nil and start ~= e then
-        if not (cursor.column == index + start and cursor.line == line) then
-          table.insert(positions, {row = line, column = index + start})
-        end
+        table.insert(positions, {row = line, column = index + start})
         index = index + start + 1
       end
     until start == nil or start == e
   end
+
+  util.remove_cursor_position(positions, cursor)
 
   return {
     width = window.width,

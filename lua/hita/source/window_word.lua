@@ -12,14 +12,14 @@ return function(_)
       local match_start, match_end = line:find("%w+", index)
       if match_start ~= nil then
         local column = match_start - 1
-        if not (cursor.column == column and cursor.line == line) then
-          table.insert(positions, {row = line_index, column = column})
-        end
+        table.insert(positions, {row = line_index, column = column})
         index = match_end + 1
       end
     until match_start == nil
     line_index = line_index + 1
   end
+
+  util.remove_cursor_position(positions, cursor)
 
   return {
     width = window.width,
