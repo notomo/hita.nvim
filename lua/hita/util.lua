@@ -45,4 +45,17 @@ M.remove_cursor_position = function(positions, cursor)
   end
 end
 
+M.matched_positions = function(line, pattern, row)
+  local positions = {}
+  local index = 0
+  repeat
+    local s, e = line:find(pattern, index)
+    if s ~= nil then
+      table.insert(positions, {row = row, column = s - 1})
+      index = e + 1
+    end
+  until s == nil
+  return positions
+end
+
 return M

@@ -7,15 +7,8 @@ return function(_)
   local positions = {}
   local row = window.first_row
   for _, line in ipairs(window.lines()) do
-    local index = 0
-    repeat
-      local match_start, match_end = line:find("%w+", index)
-      if match_start ~= nil then
-        local column = match_start - 1
-        table.insert(positions, {row = row, column = column})
-        index = match_end + 1
-      end
-    until match_start == nil
+    local matched = util.matched_positions(line, "%w+", row)
+    positions = vim.list_extend(positions, matched)
     row = row + 1
   end
 
