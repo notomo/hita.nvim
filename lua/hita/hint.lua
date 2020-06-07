@@ -2,7 +2,7 @@ local M = {}
 
 local callbacks = {}
 
-local close_window = function(id)
+M.close_window = function(id)
   if id == "" then
     return
   end
@@ -84,7 +84,7 @@ M.start = function(source)
     end
 
     callbacks[target] = function()
-      close_window(id)
+      M.close_window(id)
       vim.api.nvim_set_current_win(source.window)
       vim.api.nvim_command("normal! m'")
       vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
@@ -93,11 +93,23 @@ M.start = function(source)
     vim.api.nvim_buf_set_keymap(bufnr, "n", target, rhs, {noremap = true, nowait = true, silent = true})
   end
 
-  callbacks[M.cancel_key] = function()
-    close_window(id)
-  end
-  local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(M.cancel_key)
+  local rhs = (":<C-u>lua require 'hita/hint'.close_window(%s)<CR>"):format(id)
   vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
+
+  local on_leave = ("autocmd WinLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
+  vim.api.nvim_command(on_leave)
+
+  local on_cmdline_enter =
+    ("autocmd CmdlineEnter <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
+  vim.api.nvim_command(on_cmdline_enter)
+
+  local on_move =
+    ("autocmd CursorMoved <buffer=%s> ++once autocmd CursorMoved <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(
+    bufnr,
+    bufnr,
+    id
+  )
+  vim.api.nvim_command(on_move)
 
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")

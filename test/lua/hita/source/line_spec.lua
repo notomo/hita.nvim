@@ -50,4 +50,19 @@ describe('line source', function ()
     assert.cursor(cursor)
   end)
 
+  it("cancels on leaving the window", function()
+    helper.set_lines("1_2_3_4")
+
+    local cursor = helper.cursor()
+
+    command("Hita line")
+
+    assert.window_count(2)
+
+    command("wincmd p")
+
+    assert.window_count(1)
+    assert.cursor(cursor)
+  end)
+
 end)
