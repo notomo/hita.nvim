@@ -36,4 +36,24 @@ test2]])
     assert.current_line("test2")
   end)
 
+  it("saves the position before jump", function()
+    helper.set_lines([[
+test1
+test2
+test3]])
+
+    command("Hita downside_line")
+
+    assert.window_count(2)
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_line("test2")
+
+    helper.jump_before()
+
+    assert.current_line("test1")
+  end)
+
 end)

@@ -86,6 +86,7 @@ M.start = function(source)
     callbacks[target] = function()
       close_window(id)
       vim.api.nvim_set_current_win(source.window)
+      vim.api.nvim_command("normal! m'")
       vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
     end
     local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(target)

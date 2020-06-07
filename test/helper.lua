@@ -24,6 +24,10 @@ M.input_key = function(key)
   M.command("normal " .. key)
 end
 
+M.jump_before = function()
+  M.input_key("``")
+end
+
 M.set_lines = function(lines)
   vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(lines, "\n"))
 end
