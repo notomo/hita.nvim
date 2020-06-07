@@ -61,4 +61,14 @@ M.matched_positions = function(line, pattern, row)
   return positions
 end
 
+M.non_space_column = function(row)
+  local line = vim.fn.getline(row)
+  local column = 0
+  local non_space = line:find("%S")
+  if non_space ~= nil then
+    column = non_space - 1
+  end
+  return column
+end
+
 return M

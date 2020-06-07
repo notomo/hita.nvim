@@ -70,6 +70,12 @@ AM.cursor = function(expected)
   assert.same(expected, actual, msg)
 end
 
+AM.column = function(expected)
+  local actual = vim.fn.col(".")
+  local msg = string.format("column should be %s, but actual: %s", expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
 M.assert = AM
 
 return M

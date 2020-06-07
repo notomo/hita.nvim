@@ -6,7 +6,8 @@ return function(_)
 
   local positions = {}
   for _, row in ipairs(vim.fn.range(cursor.row - 1, window.first_row, -1)) do
-    table.insert(positions, {row = row, column = 0})
+    local column = util.non_space_column(row)
+    table.insert(positions, {row = row, column = column})
   end
 
   return {
