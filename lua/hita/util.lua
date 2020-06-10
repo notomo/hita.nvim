@@ -3,12 +3,11 @@ local M = {}
 M.current_window = function()
   local id = 0
 
-  local row, col = unpack(vim.api.nvim_win_get_cursor(id))
+  local row = vim.api.nvim_win_get_cursor(id)[1]
   local vcol = vim.fn.virtcol(".")
   local cursor = {
     row = row,
-    column = col,
-    virtual_column = vcol - 1
+    column = vcol - 1
   }
   local column = vim.fn.wincol() - vcol
 
