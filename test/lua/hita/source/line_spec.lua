@@ -44,7 +44,7 @@ describe('line source', function ()
 
     assert.window_count(2)
 
-    helper.input_key("jj")
+    helper.input_key("j")
 
     assert.window_count(1)
     assert.cursor(cursor)

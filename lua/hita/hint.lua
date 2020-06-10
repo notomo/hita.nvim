@@ -40,7 +40,7 @@ local make_targets = function(chars, positions_count)
 end
 
 M.chars = "asdghklqwertyuopzxcvbnmf;,./0"
-M.cancel_key = "jj"
+M.cancel_key = "j"
 
 M.start = function(source)
   if #source.positions == 0 then
