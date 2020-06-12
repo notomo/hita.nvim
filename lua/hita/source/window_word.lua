@@ -6,7 +6,8 @@ return function(_)
 
   local positions = {}
   local row = window.first_row
-  for _, line in ipairs(window.lines()) do
+  local lines = window.lines()
+  for _, line in ipairs(lines) do
     local matched = util.matched_positions(line, "%w+", row)
     positions = vim.list_extend(positions, matched)
     row = row + 1
@@ -18,11 +19,11 @@ return function(_)
     cursor = cursor,
     width = window.width,
     height = window.height,
-    relative = "win",
     row = 0,
-    column = window.column,
+    column = 0,
     window = window.id,
     positions = positions,
+    lines = lines,
     offset = window.first_row - 1
   }
 end

@@ -27,7 +27,7 @@ describe('line source', function ()
     command("Hita line")
 
     assert.window_count(2)
-    assert.current_line_startswith("  a b ca")
+    assert.current_line("1_a_b_ca")
 
     helper.input_key("ca")
 

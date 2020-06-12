@@ -26,11 +26,11 @@ return function(_)
     cursor = cursor,
     width = window.width,
     height = window.height,
-    relative = "win",
     row = 0,
-    column = window.column,
+    column = 0,
     window = window.id,
     positions = positions,
+    lines = window.lines(),
     offset = window.first_row - 1
   }
 end

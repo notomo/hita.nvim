@@ -47,6 +47,10 @@ M.start = function(source)
     return
   end
 
+  local original = {
+    list = vim.wo.list
+  }
+
   local bufnr = vim.api.nvim_create_buf(false, true)
   local id =
     vim.api.nvim_open_win(
@@ -55,9 +59,10 @@ M.start = function(source)
     {
       width = source.width,
       height = source.height,
-      relative = source.relative,
+      relative = "win",
       row = source.row,
       col = source.column,
+      bufpos = {vim.fn.line("w0") - 1, 0},
       external = false,
       style = "minimal"
     }
@@ -67,8 +72,8 @@ M.start = function(source)
 
   callbacks = {}
 
-  local line = (" "):rep(source.width)
-  local lines = vim.fn["repeat"]({line}, source.height)
+  local highlights = {}
+  local lines = source.lines
   for i, pos in ipairs(source.positions) do
     local target = targets[i]
     if target == nil then
@@ -78,10 +83,11 @@ M.start = function(source)
     local row = pos.row - source.offset
     local replaced = lines[row]
     if pos.column > 1 then
-      lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + 1, -1)
+      lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + #target + 1, -1)
     else
-      lines[row] = target .. replaced:sub(2, -1)
+      lines[row] = target .. replaced:sub(#target + 1, -1)
     end
+    table.insert(highlights, {row = row - 1, column = pos.column, target = target})
 
     callbacks[target] = function()
       M.close_window(id)
@@ -115,12 +121,17 @@ M.start = function(source)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
 
+  local ns = vim.api.nvim_create_namespace("hita")
+  for _, hl in ipairs(highlights) do
+    vim.api.nvim_buf_add_highlight(bufnr, ns, "HitaTarget", hl.row, hl.column, hl.column + #hl.target)
+  end
+
   local cursor = source.cursor
   vim.api.nvim_win_set_cursor(id, {cursor.row - source.offset, cursor.column})
-  vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaTarget")
-  vim.api.nvim_win_set_option(id, "winblend", 40)
+  vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaBackground")
   vim.api.nvim_win_set_option(id, "scrolloff", 0)
   vim.api.nvim_win_set_option(id, "sidescrolloff", 0)
+  vim.api.nvim_win_set_option(id, "list", original.list)
 end
 
 M.callback = function(target)

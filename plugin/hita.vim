@@ -11,3 +11,4 @@ else
 endif
 
 highlight default link HitaTarget ErrorMsg
+highlight default link HitaBackground Comment

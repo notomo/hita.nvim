@@ -14,10 +14,11 @@ return function(_)
     cursor = cursor,
     width = window.width,
     height = window.last_row - cursor.row + 1,
-    relative = "cursor",
-    row = 0,
-    column = -cursor.column,
+    row = cursor.row - window.first_row,
+    column = 0,
+    window = window.id,
     positions = positions,
+    lines = window.downside_lines(),
     offset = cursor.row - 1
   }
 end

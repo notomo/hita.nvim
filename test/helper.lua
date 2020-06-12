@@ -51,12 +51,6 @@ AM.current_line = function(expected)
   assert.equals(expected, actual, msg)
 end
 
-AM.current_line_startswith = function(expected)
-  local actual = vim.fn.getline(".")
-  local msg = string.format("current line should start with %s, but actual: %s", expected, actual)
-  assert.is_true(vim.startswith(actual, expected), msg)
-end
-
 AM.current_char = function(expected)
   local col = vim.fn.col(".")
   local actual = vim.fn.getline("."):sub(col, col)
