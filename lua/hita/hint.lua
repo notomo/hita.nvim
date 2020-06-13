@@ -88,7 +88,7 @@ M.start = function(source)
     if replaced == nil then
       break
     end
-    if pos.column > 1 then
+    if pos.column >= 1 then
       lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + #target + 1, -1)
     else
       lines[row] = target .. replaced:sub(#target + 1, -1)
@@ -123,6 +123,10 @@ M.start = function(source)
   )
   vim.api.nvim_command(on_move)
 
+  local on_buf_leave =
+    ("autocmd BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
+  vim.api.nvim_command(on_buf_leave)
+
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
@@ -136,8 +140,6 @@ M.start = function(source)
   local cursor = source.cursor
   vim.api.nvim_win_set_cursor(id, {cursor.row - source.offset, cursor.column})
   vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaBackground")
-  vim.api.nvim_win_set_option(id, "scrolloff", 0)
-  vim.api.nvim_win_set_option(id, "sidescrolloff", 0)
   vim.api.nvim_win_set_option(id, "list", original.list)
   vim.api.nvim_win_set_option(id, "wrap", original.wrap)
 end

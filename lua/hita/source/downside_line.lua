@@ -10,13 +10,9 @@ return function(_)
     table.insert(positions, {row = row, column = column})
   end
 
+  vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
   local row = vim.fn.winline() - 1
-  if vim.api.nvim_buf_line_count(0) ~= cursor.row then
-    vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
-    local start_row = vim.fn.winline()
-    row = start_row - 1
-    vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
-  end
+  vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
 
   return {
     cursor = cursor,
