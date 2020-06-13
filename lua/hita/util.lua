@@ -14,7 +14,12 @@ M.current_window = function()
   vim.api.nvim_win_set_cursor(0, {cursor_row, cursor_col})
 
   local first_row = vim.fn.line("w0")
+
   local last_row = vim.fn.line("w$")
+  if vim.api.nvim_buf_line_count(0) ~= last_row then
+    last_row = last_row + 1
+  end
+
   local width = vim.api.nvim_win_get_width(id) - column + 1
   local height = vim.api.nvim_win_get_height(id)
 
@@ -26,31 +31,34 @@ M.current_window = function()
     column = column,
     id = id,
     lines = function()
-      local lines = {}
+      local ls = vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
       if vim.wo.wrap then
-        return vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
+        return ls
       end
-      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)) do
+      local lines = {}
+      for _, line in ipairs(ls) do
         table.insert(lines, line:sub(0, width))
       end
       return lines
     end,
     upside_lines = function()
-      local lines = {}
+      local ls = vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)
       if vim.wo.wrap then
-        return vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)
+        return ls
       end
-      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)) do
+      local lines = {}
+      for _, line in ipairs(ls) do
         table.insert(lines, line:sub(0, width))
       end
       return lines
     end,
     downside_lines = function()
-      local lines = {}
+      local ls = vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)
       if vim.wo.wrap then
-        return vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)
+        return ls
       end
-      for _, line in ipairs(vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)) do
+      local lines = {}
+      for _, line in ipairs(ls) do
         table.insert(lines, line:sub(0, width))
       end
       return lines

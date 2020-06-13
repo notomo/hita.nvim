@@ -85,6 +85,9 @@ M.start = function(source)
 
     local row = pos.row - source.offset
     local replaced = lines[row]
+    if replaced == nil then
+      break
+    end
     if pos.column > 1 then
       lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + #target + 1, -1)
     else
