@@ -9,8 +9,9 @@ M.current_window = function()
     column = cursor_col
   }
 
-  local backword_line = (vim.api.nvim_get_current_line()):sub(0, cursor_col)
-  local column = vim.fn.wincol() - vim.fn.strdisplaywidth(backword_line, cursor_col)
+  vim.api.nvim_win_set_cursor(0, {cursor_row, 0})
+  local column = vim.fn.wincol()
+  vim.api.nvim_win_set_cursor(0, {cursor_row, cursor_col})
 
   local first_row = vim.fn.line("w0")
   local last_row = vim.fn.line("w$")
@@ -26,6 +27,9 @@ M.current_window = function()
     id = id,
     lines = function()
       local lines = {}
+      if vim.wo.wrap then
+        return vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
+      end
       for _, line in ipairs(vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)) do
         table.insert(lines, line:sub(0, width))
       end
@@ -33,6 +37,9 @@ M.current_window = function()
     end,
     upside_lines = function()
       local lines = {}
+      if vim.wo.wrap then
+        return vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)
+      end
       for _, line in ipairs(vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)) do
         table.insert(lines, line:sub(0, width))
       end
@@ -40,6 +47,9 @@ M.current_window = function()
     end,
     downside_lines = function()
       local lines = {}
+      if vim.wo.wrap then
+        return vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)
+      end
       for _, line in ipairs(vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)) do
         table.insert(lines, line:sub(0, width))
       end
@@ -49,6 +59,9 @@ M.current_window = function()
       return vim.fn.range(first_row, last_row)
     end,
     get_current_line = function()
+      if vim.wo.wrap then
+        return vim.api.nvim_get_current_line()
+      end
       return (vim.api.nvim_get_current_line()):sub(0, width)
     end,
     cursor = cursor

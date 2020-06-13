@@ -39,7 +39,8 @@ local make_targets = function(chars, positions_count)
   return targets
 end
 
-M.chars = "asdghklqwertyuopzxcvbnmf;,./0"
+-- if char is included in `breakat`, wrapped line may be broken by hint.
+M.chars = "asdghklqwertyuopzxcvbnmf0"
 M.cancel_key = "j"
 
 M.start = function(source)
@@ -48,7 +49,9 @@ M.start = function(source)
   end
 
   local original = {
-    list = vim.wo.list
+    list = vim.wo.list,
+    wrap = vim.wo.wrap,
+    textwidth = vim.bo.textwidth
   }
 
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -120,6 +123,7 @@ M.start = function(source)
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+  vim.api.nvim_buf_set_option(bufnr, "textwidth", original.textwidth)
 
   local ns = vim.api.nvim_create_namespace("hita")
   for _, hl in ipairs(highlights) do
@@ -132,6 +136,7 @@ M.start = function(source)
   vim.api.nvim_win_set_option(id, "scrolloff", 0)
   vim.api.nvim_win_set_option(id, "sidescrolloff", 0)
   vim.api.nvim_win_set_option(id, "list", original.list)
+  vim.api.nvim_win_set_option(id, "wrap", original.wrap)
 end
 
 M.callback = function(target)
