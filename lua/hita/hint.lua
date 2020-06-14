@@ -65,7 +65,6 @@ M.start = function(source)
       relative = "win",
       row = source.row,
       col = source.column,
-      bufpos = {vim.fn.line("w0") - 1, 0},
       external = false,
       style = "minimal"
     }

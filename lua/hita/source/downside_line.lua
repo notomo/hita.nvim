@@ -10,16 +10,19 @@ return function(_)
     table.insert(positions, {row = row, column = column})
   end
 
-  vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
   local row = vim.fn.winline() - 1
-  vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+  if vim.wo.wrap then
+    vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
+    row = vim.fn.winline() - 1
+    vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+  end
 
   return {
     cursor = cursor,
     width = window.width,
     height = window.height - row,
     row = row,
-    column = 0,
+    column = window.column,
     window = window.id,
     positions = positions,
     lines = window.downside_lines(),

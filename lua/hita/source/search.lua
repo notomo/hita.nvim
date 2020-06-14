@@ -27,7 +27,7 @@ return function(_)
     width = window.width,
     height = window.height,
     row = 0,
-    column = 0,
+    column = window.column,
     window = window.id,
     positions = positions,
     lines = window.lines(),

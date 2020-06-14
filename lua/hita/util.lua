@@ -9,9 +9,9 @@ M.current_window = function()
     column = cursor_col
   }
 
-  vim.api.nvim_win_set_cursor(0, {cursor_row, 0})
-  local column = vim.fn.wincol()
-  vim.api.nvim_win_set_cursor(0, {cursor_row, cursor_col})
+  vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
+  local column = vim.fn.wincol() - 1
+  vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
 
   local first_row = vim.fn.line("w0")
 
@@ -20,7 +20,7 @@ M.current_window = function()
     last_row = last_row + 1
   end
 
-  local width = vim.api.nvim_win_get_width(id) - column + 1
+  local width = vim.api.nvim_win_get_width(id) - column
   local height = vim.api.nvim_win_get_height(id)
 
   return {
@@ -31,46 +31,19 @@ M.current_window = function()
     column = column,
     id = id,
     lines = function()
-      local ls = vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
-      if vim.wo.wrap then
-        return ls
-      end
-      local lines = {}
-      for _, line in ipairs(ls) do
-        table.insert(lines, line:sub(0, width))
-      end
-      return lines
+      return vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
     end,
     upside_lines = function()
-      local ls = vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)
-      if vim.wo.wrap then
-        return ls
-      end
-      local lines = {}
-      for _, line in ipairs(ls) do
-        table.insert(lines, line:sub(0, width))
-      end
-      return lines
+      return vim.api.nvim_buf_get_lines(0, first_row - 1, cursor.row, true)
     end,
     downside_lines = function()
-      local ls = vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)
-      if vim.wo.wrap then
-        return ls
-      end
-      local lines = {}
-      for _, line in ipairs(ls) do
-        table.insert(lines, line:sub(0, width))
-      end
-      return lines
+      return vim.api.nvim_buf_get_lines(0, cursor.row - 1, last_row, true)
     end,
     rows = function()
       return vim.fn.range(first_row, last_row)
     end,
     get_current_line = function()
-      if vim.wo.wrap then
-        return vim.api.nvim_get_current_line()
-      end
-      return (vim.api.nvim_get_current_line()):sub(0, width)
+      return vim.api.nvim_get_current_line()
     end,
     cursor = cursor
   }

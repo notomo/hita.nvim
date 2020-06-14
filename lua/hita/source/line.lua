@@ -8,18 +8,22 @@ return function(_)
   local positions = util.matched_positions(line, "%w+", cursor.row)
   util.remove_position(positions, cursor)
 
-  vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
   local row = vim.fn.winline() - 1
-  vim.api.nvim_win_set_cursor(0, {vim.api.nvim_win_get_cursor(window.id)[1], vim.fn.col("$")})
-  local height = vim.fn.winline() - row
-  vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+  local height = 1
+  if vim.wo.wrap then
+    vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
+    row = vim.fn.winline() - 1
+    vim.api.nvim_win_set_cursor(0, {vim.api.nvim_win_get_cursor(window.id)[1], vim.fn.col("$")})
+    height = vim.fn.winline() - row
+    vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+  end
 
   return {
     cursor = cursor,
     width = window.width,
     height = height,
     row = row,
-    column = 0,
+    column = window.column,
     window = window.id,
     positions = positions,
     row_offset = cursor.row - 1,
