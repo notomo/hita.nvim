@@ -116,4 +116,52 @@ describe('line source', function ()
     assert.window_relative_row(1)
   end)
 
+  it("can displays hints on line including multibyte chars", function()
+    require "hita/hint".chars = "abc"
+    helper.set_lines("ああhoge_foo")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.current_line("ああaoge_boo")
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_char("h")
+  end)
+
+  it("can displays hints on line including tab chars", function()
+    require "hita/hint".chars = "abc"
+    helper.set_lines("\t\thoge_foo")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.current_line("\t\taoge_boo")
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_char("h")
+  end)
+
+  it("can displays hints on line including tab chars with signcolumn", function()
+    vim.wo.signcolumn = "yes:5"
+    vim.wo.numberwidth = 4
+    vim.wo.number = true
+    require "hita/hint".chars = "abc"
+    helper.set_lines("\t\thoge_foo")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.current_line("\t\taoge_boo")
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.current_char("h")
+  end)
+
 end)

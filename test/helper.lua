@@ -71,6 +71,12 @@ AM.column = function(expected)
   assert.equals(expected, actual, msg)
 end
 
+AM.window_width = function(expected)
+  local actual = vim.api.nvim_win_get_width(0)
+  local msg = string.format("window width should be %s, but actual: %s", expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
 AM.window_height = function(expected)
   local actual = vim.api.nvim_win_get_height(0)
   local msg = string.format("window height should be %s, but actual: %s", expected, actual)
@@ -80,6 +86,12 @@ end
 AM.window_relative_row = function(expected)
   local actual = vim.fn.winline()
   local msg = string.format("window relative line should be %s, but actual: %s", expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
+AM.window_col = function(expected)
+  local actual = vim.fn.win_screenpos(0)[2]
+  local msg = string.format("window col should be %s, but actual: %s", expected, actual)
   assert.equals(expected, actual, msg)
 end
 
