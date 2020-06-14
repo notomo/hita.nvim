@@ -65,4 +65,55 @@ describe('line source', function ()
     assert.cursor(cursor)
   end)
 
+  it("cancels on leaving the buffer", function()
+    helper.set_lines("1_2_3_4")
+
+    local cursor = helper.cursor()
+
+    command("Hita line")
+
+    assert.window_count(2)
+
+    command("buffer #")
+
+    assert.window_count(1)
+    assert.cursor(cursor)
+  end)
+
+  it("displays hint on wrapped line end", function()
+    vim.bo.textwidth = 30
+    vim.wo.wrap = true
+    helper.set_lines("z________________________________________________________________________________________________________z")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.window_height(2)
+    assert.current_line("z________________________________________________________________________________________________________a")
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.window_relative_row(2)
+  end)
+
+  it("displays hint on wrapped line start", function()
+    vim.bo.textwidth = 30
+    vim.wo.wrap = true
+    helper.set_lines("z________________________________________________________________________________________________________z")
+    command("normal! $")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.window_height(2)
+    assert.window_relative_row(2)
+    assert.current_line("a________________________________________________________________________________________________________z")
+
+    helper.input_key("a")
+
+    assert.window_count(1)
+    assert.window_relative_row(1)
+  end)
+
 end)

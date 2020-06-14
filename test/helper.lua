@@ -7,6 +7,7 @@ M.command = function(cmd)
 end
 
 M.before_each = function()
+  require "hita/hint".chars = "asdghklqwertyuopzxcvbnmf0"
   M.command("filetype on")
   M.command("syntax enable")
 end
@@ -67,6 +68,18 @@ end
 AM.column = function(expected)
   local actual = vim.fn.col(".")
   local msg = string.format("column should be %s, but actual: %s", expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
+AM.window_height = function(expected)
+  local actual = vim.api.nvim_win_get_height(0)
+  local msg = string.format("window height should be %s, but actual: %s", expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
+AM.window_relative_row = function(expected)
+  local actual = vim.fn.winline()
+  local msg = string.format("window relative line should be %s, but actual: %s", expected, actual)
   assert.equals(expected, actual, msg)
 end
 

@@ -9,7 +9,7 @@ describe('upside_line source', function ()
 
   it("can go to the nearest target", function()
     helper.set_lines([[
-test1
+  test1
 test2]])
     command("normal! G")
 
@@ -20,7 +20,8 @@ test2]])
     helper.input_key("a")
 
     assert.window_count(1)
-    assert.current_line("test1")
+    assert.current_line("  test1")
+    assert.column(3)
   end)
 
   it("does nothing on top", function()
