@@ -23,6 +23,6 @@ return function(_)
     window = window.id,
     positions = positions,
     lines = window.downside_lines(),
-    offset = cursor.row - 1
+    row_offset = cursor.row - 1
   }
 end

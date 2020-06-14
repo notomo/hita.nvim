@@ -22,7 +22,7 @@ return function(_)
     column = 0,
     window = window.id,
     positions = positions,
-    offset = cursor.row - 1,
+    row_offset = cursor.row - 1,
     lines = {line}
   }
 end

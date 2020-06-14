@@ -83,7 +83,7 @@ M.start = function(source)
       break
     end
 
-    local row = pos.row - source.offset
+    local row = pos.row - source.row_offset
     local replaced = lines[row]
     if replaced == nil then
       break
@@ -138,7 +138,7 @@ M.start = function(source)
   end
 
   local cursor = source.cursor
-  vim.api.nvim_win_set_cursor(id, {cursor.row - source.offset, cursor.column})
+  vim.api.nvim_win_set_cursor(id, {cursor.row - source.row_offset, cursor.column})
   vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaBackground")
   vim.api.nvim_win_set_option(id, "list", original.list)
   vim.api.nvim_win_set_option(id, "wrap", original.wrap)
