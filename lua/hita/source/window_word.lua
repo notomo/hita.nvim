@@ -9,7 +9,7 @@ return function(_)
   local lines = window.lines()
   for _, line in ipairs(lines) do
     local matched = util.matched_positions(line, "%w+", row)
-    matched = util.remove_outside_x_position(matched, window, cursor)
+    matched = util.remove_outside_x_position(matched, window)
     positions = vim.list_extend(positions, matched)
     row = row + 1
   end

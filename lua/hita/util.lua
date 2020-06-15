@@ -9,9 +9,14 @@ M.current_window = function()
     column = cursor_col
   }
 
+  local view = vim.fn.winsaveview()
+  local restore_view = function()
+    vim.fn.winrestview(view)
+  end
+
   vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
   local column = vim.fn.wincol() - 1
-  vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+  restore_view()
 
   local first_row = vim.fn.line("w0")
 
@@ -22,10 +27,13 @@ M.current_window = function()
 
   local width = vim.api.nvim_win_get_width(id) - column
   local height = vim.api.nvim_win_get_height(id)
+  local first_column = view.leftcol
 
   return {
     first_row = first_row,
+    first_column = first_column,
     last_row = last_row,
+    last_column = first_column + width,
     width = width,
     height = height,
     column = column,
@@ -45,6 +53,7 @@ M.current_window = function()
     get_current_line = function()
       return vim.api.nvim_get_current_line()
     end,
+    restore_view = restore_view,
     cursor = cursor
   }
 end
@@ -58,15 +67,13 @@ M.remove_position = function(positions, removed)
   end
 end
 
-M.remove_outside_x_position = function(positions, window, cursor)
+M.remove_outside_x_position = function(positions, window)
   if vim.wo.wrap then
     return positions
   end
-  local min = cursor.column - window.width
-  local max = cursor.column + window.width
   local new_positions = {}
   for _, pos in ipairs(positions) do
-    if min <= pos.column and pos.column <= max then
+    if window.first_column <= pos.column and pos.column <= window.last_column then
       table.insert(new_positions, pos)
     end
   end
@@ -94,6 +101,33 @@ M.non_space_column = function(row)
     column = non_space - 1
   end
   return column
+end
+
+M.make_hint_targets = function(chars, positions_count)
+  local char_count = #chars
+  local remaining = positions_count - char_count
+
+  local all_chars = vim.split(chars, "")
+  if remaining < 0 then
+    return all_chars
+  end
+
+  local pair_count = math.floor(remaining / char_count + 1)
+  local single_chars = chars:sub(0, -pair_count - 1)
+
+  local targets = {}
+  if single_chars ~= "" then
+    targets = vim.split(single_chars, "")
+  end
+
+  local pair_chars = chars:sub(-pair_count, -1)
+  for _, head_char in ipairs(vim.split(pair_chars, "")) do
+    for _, char in ipairs(all_chars) do
+      table.insert(targets, head_char .. char)
+    end
+  end
+
+  return targets
 end
 
 return M

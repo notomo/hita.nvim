@@ -14,7 +14,7 @@ return function(_)
   if vim.wo.wrap then
     vim.api.nvim_win_set_cursor(0, {cursor.row, vim.fn.col("$")})
     height = vim.fn.winline()
-    vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+    window.restore_view()
   end
 
   return {

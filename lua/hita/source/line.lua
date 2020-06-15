@@ -7,7 +7,7 @@ return function(_)
 
   local positions = util.matched_positions(line, "%w+", cursor.row)
   util.remove_position(positions, cursor)
-  positions = util.remove_outside_x_position(positions, window, cursor)
+  positions = util.remove_outside_x_position(positions, window)
 
   local row = vim.fn.winline() - 1
   local height = 1
@@ -16,7 +16,7 @@ return function(_)
     row = vim.fn.winline() - 1
     vim.api.nvim_win_set_cursor(0, {vim.api.nvim_win_get_cursor(window.id)[1], vim.fn.col("$")})
     height = vim.fn.winline() - row
-    vim.api.nvim_win_set_cursor(0, {cursor.row, cursor.column})
+    window.restore_view()
   end
 
   return {

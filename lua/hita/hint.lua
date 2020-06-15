@@ -1,43 +1,8 @@
+local util = require "hita/util"
+
 local M = {}
 
 local callbacks = {}
-
-M.close_window = function(id)
-  if id == "" then
-    return
-  end
-  if not vim.api.nvim_win_is_valid(id) then
-    return
-  end
-  vim.api.nvim_win_close(id, true)
-end
-
-local make_targets = function(chars, positions_count)
-  local char_count = #chars
-  local remaining = positions_count - char_count
-
-  local all_chars = vim.split(chars, "")
-  if remaining < 0 then
-    return all_chars
-  end
-
-  local pair_count = math.floor(remaining / char_count + 1)
-  local single_chars = chars:sub(0, -pair_count - 1)
-
-  local targets = {}
-  if single_chars ~= "" then
-    targets = vim.split(single_chars, "")
-  end
-
-  local pair_chars = chars:sub(-pair_count, -1)
-  for _, head_char in ipairs(vim.split(pair_chars, "")) do
-    for _, char in ipairs(all_chars) do
-      table.insert(targets, head_char .. char)
-    end
-  end
-
-  return targets
-end
 
 -- if char is included in `breakat`, wrapped line may be broken by hint.
 M.chars = "asdghklqwertyuopzxcvbnmf0"
@@ -70,7 +35,7 @@ M.start = function(source)
     }
   )
 
-  local targets = make_targets(M.chars, #source.positions)
+  local targets = util.make_hint_targets(M.chars, #source.positions)
 
   callbacks = {}
 
@@ -149,6 +114,16 @@ M.callback = function(target)
     return
   end
   callback()
+end
+
+M.close_window = function(id)
+  if id == "" then
+    return
+  end
+  if not vim.api.nvim_win_is_valid(id) then
+    return
+  end
+  vim.api.nvim_win_close(id, true)
 end
 
 return M
