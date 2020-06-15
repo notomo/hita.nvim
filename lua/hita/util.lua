@@ -58,6 +58,21 @@ M.remove_position = function(positions, removed)
   end
 end
 
+M.remove_outside_x_position = function(positions, window, cursor)
+  if vim.wo.wrap then
+    return positions
+  end
+  local min = cursor.column - window.width
+  local max = cursor.column + window.width
+  local new_positions = {}
+  for _, pos in ipairs(positions) do
+    if min <= pos.column and pos.column <= max then
+      table.insert(new_positions, pos)
+    end
+  end
+  return new_positions
+end
+
 M.matched_positions = function(line, pattern, row)
   local positions = {}
   local index = 0
