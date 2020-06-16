@@ -30,10 +30,12 @@ M.start = function(source)
       relative = "win",
       row = source.row,
       col = source.column,
+      bufpos = source.bufpos,
       external = false,
       style = "minimal"
     }
   )
+  source.window.copy_column_view()
 
   local targets = util.make_hint_targets(M.chars, #source.positions)
 
@@ -61,9 +63,9 @@ M.start = function(source)
 
     callbacks[target] = function()
       M.close_window(id)
-      vim.api.nvim_set_current_win(source.window)
+      vim.api.nvim_set_current_win(source.window.id)
       vim.api.nvim_command("normal! m'")
-      vim.api.nvim_win_set_cursor(source.window, {pos.row, pos.column})
+      vim.api.nvim_win_set_cursor(source.window.id, {pos.row, pos.column})
     end
     local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(target)
     vim.api.nvim_buf_set_keymap(bufnr, "n", target, rhs, {noremap = true, nowait = true, silent = true})

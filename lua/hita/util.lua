@@ -15,7 +15,7 @@ M.current_window = function()
   end
 
   vim.api.nvim_win_set_cursor(0, {cursor.row, 0})
-  local column = vim.fn.wincol() - 1
+  local number_sign_width = vim.fn.wincol()
   restore_view()
 
   local first_row = vim.fn.line("w0")
@@ -25,9 +25,16 @@ M.current_window = function()
     last_row = last_row + 1
   end
 
-  local width = vim.api.nvim_win_get_width(id) - column
+  local width = vim.api.nvim_win_get_width(id) - number_sign_width + 1
   local height = vim.api.nvim_win_get_height(id)
   local first_column = view.leftcol
+
+  local column = 0
+  if first_column >= number_sign_width then
+    column = number_sign_width + 1
+  elseif first_column >= 1 then
+    column = first_column
+  end
 
   return {
     first_row = first_row,
@@ -37,6 +44,7 @@ M.current_window = function()
     width = width,
     height = height,
     column = column,
+    bufpos = {first_row - 1, 0},
     id = id,
     lines = function()
       return vim.api.nvim_buf_get_lines(0, first_row - 1, last_row, true)
@@ -54,6 +62,16 @@ M.current_window = function()
       return vim.api.nvim_get_current_line()
     end,
     restore_view = restore_view,
+    copy_column_view = function()
+      vim.fn.winrestview(
+        {
+          col = view.col,
+          coladd = view.coladd,
+          leftcol = view.leftcol,
+          skipcol = view.skipcol
+        }
+      )
+    end,
     cursor = cursor
   }
 end

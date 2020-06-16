@@ -25,7 +25,8 @@ return function(_)
     height = height,
     row = row,
     column = window.column,
-    window = window.id,
+    bufpos = window.bufpos,
+    window = window,
     positions = positions,
     row_offset = cursor.row - 1,
     lines = {line}
