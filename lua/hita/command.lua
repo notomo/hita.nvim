@@ -23,15 +23,12 @@ M.parse_args = function(raw_args)
 end
 
 M.find_source = function(args)
-  local name = string.format("hita/source/%s", args.source_name)
-  for _, path in ipairs(vim.split(package.path, ";")) do
-    local p = path:gsub("?", name)
-    if vim.fn.filereadable(p) == 1 then
-      local f = dofile(p)
-      return f(args)
-    end
+  local name = ("hita/source/%s"):format(args.source_name)
+  local ok, f = pcall(require, name)
+  if not ok then
+    return nil
   end
-  return nil
+  return f(args)
 end
 
 M.main = function(...)
