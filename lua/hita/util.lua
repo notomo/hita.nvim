@@ -111,11 +111,17 @@ M.matched_positions = function(line, pattern, row)
   return positions
 end
 
-M.non_space_column = function(line)
+M.non_space_column = function(line, first_column, last_column)
   local column = 0
   local non_space = line:find("%S")
   if non_space ~= nil then
-    column = non_space - 1
+    if first_column <= non_space and non_space <= last_column then
+      column = non_space - 1
+    elseif last_column < non_space then
+      column = last_column - 1
+    else
+      column = first_column
+    end
   end
   return column
 end

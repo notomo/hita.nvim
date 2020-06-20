@@ -80,7 +80,8 @@ M.start = function(source)
   local original = {
     list = vim.wo.list,
     wrap = vim.wo.wrap,
-    textwidth = vim.bo.textwidth
+    textwidth = vim.bo.textwidth,
+    listchars = vim.o.listchars
   }
 
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -128,6 +129,10 @@ M.start = function(source)
   vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaBackground")
   vim.api.nvim_win_set_option(id, "list", original.list)
   vim.api.nvim_win_set_option(id, "wrap", original.wrap)
+
+  local listchars = table.concat(vim.fn.split(original.listchars, ",precedes:."))
+  listchars = table.concat(vim.fn.split(listchars, ",extends:."))
+  vim.api.nvim_win_set_option(id, "listchars", listchars)
 end
 
 M.callback = function(target)

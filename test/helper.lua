@@ -52,6 +52,12 @@ AM.current_line = function(expected)
   assert.equals(expected, actual, msg)
 end
 
+AM.line = function(expected, number)
+  local actual = vim.fn.getline(number)
+  local msg = string.format("line %s should be %s, but actual: %s", number, expected, actual)
+  assert.equals(expected, actual, msg)
+end
+
 AM.current_char = function(expected)
   local col = vim.fn.col(".")
   local actual = vim.fn.getline("."):sub(col, col)

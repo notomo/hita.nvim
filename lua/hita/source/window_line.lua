@@ -8,7 +8,7 @@ return function(_)
   local upside_lines = window.upside_lines()
   for i, line in ipairs(util.slice(vim.fn.reverse(upside_lines), 2)) do
     local row = cursor.row - i
-    local column = util.non_space_column(line)
+    local column = util.non_space_column(line, window.first_column, window.last_column)
     table.insert(upsides, {row = row, column = column})
   end
 
@@ -16,7 +16,7 @@ return function(_)
   local downside_lines = util.slice(window.downside_lines(), 2)
   for i, line in ipairs(downside_lines) do
     local row = cursor.row + i
-    local column = util.non_space_column(line)
+    local column = util.non_space_column(line, window.first_column, window.last_column)
     table.insert(downsides, {row = row, column = column})
   end
 
