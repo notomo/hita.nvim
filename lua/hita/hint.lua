@@ -59,7 +59,11 @@ M.start = function(source)
     else
       lines[row] = target .. replaced:sub(#target + 1, -1)
     end
-    table.insert(highlights, {row = row - 1, column = pos.column, target = target})
+
+    table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTarget"})
+    if #target >= 2 then
+      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaSecondTarget"})
+    end
 
     callbacks[target] = function()
       M.close_window(id)
@@ -100,7 +104,7 @@ M.start = function(source)
 
   local ns = vim.api.nvim_create_namespace("hita")
   for _, hl in ipairs(highlights) do
-    vim.api.nvim_buf_add_highlight(bufnr, ns, "HitaTarget", hl.row, hl.column, hl.column + #hl.target)
+    vim.api.nvim_buf_add_highlight(bufnr, ns, hl.group, hl.row, hl.column, hl.column + 1)
   end
 
   local cursor = source.cursor
