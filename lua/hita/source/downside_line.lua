@@ -5,8 +5,10 @@ return function(_)
   local cursor = window.cursor
 
   local positions = {}
-  for _, row in ipairs(vim.fn.range(cursor.row + 1, window.last_row)) do
-    local column = util.non_space_column(row)
+  local lines = window.downside_lines()
+  for i, line in ipairs(util.slice(lines, 2)) do
+    local row = cursor.row + i
+    local column = util.non_space_column(line)
     table.insert(positions, {row = row, column = column})
   end
 
@@ -26,7 +28,7 @@ return function(_)
     bufpos = window.bufpos,
     window = window,
     positions = positions,
-    lines = window.downside_lines(),
+    lines = lines,
     row_offset = cursor.row - 1
   }
 end

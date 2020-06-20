@@ -111,8 +111,7 @@ M.matched_positions = function(line, pattern, row)
   return positions
 end
 
-M.non_space_column = function(row)
-  local line = vim.fn.getline(row)
+M.non_space_column = function(line)
   local column = 0
   local non_space = line:find("%S")
   if non_space ~= nil then
@@ -146,6 +145,14 @@ M.make_hint_targets = function(chars, positions_count)
   end
 
   return targets
+end
+
+M.slice = function(tbl, first, last)
+  local result = {}
+  for i = first or 1, last or #tbl, 1 do
+    result[#result + 1] = tbl[i]
+  end
+  return result
 end
 
 return M

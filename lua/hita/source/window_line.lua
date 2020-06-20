@@ -5,16 +5,23 @@ return function(_)
   local cursor = window.cursor
 
   local upsides = {}
-  for _, row in ipairs(vim.fn.range(cursor.row - 1, window.first_row, -1)) do
-    local column = util.non_space_column(row)
+  local upside_lines = window.upside_lines()
+  for i, line in ipairs(util.slice(vim.fn.reverse(upside_lines), 2)) do
+    local row = cursor.row - i
+    local column = util.non_space_column(line)
     table.insert(upsides, {row = row, column = column})
   end
 
   local downsides = {}
-  for _, row in ipairs(vim.fn.range(cursor.row + 1, window.last_row)) do
-    local column = util.non_space_column(row)
+  local downside_lines = util.slice(window.downside_lines(), 2)
+  for i, line in ipairs(downside_lines) do
+    local row = cursor.row + i
+    local column = util.non_space_column(line)
     table.insert(downsides, {row = row, column = column})
   end
+
+  local lines = upside_lines
+  vim.list_extend(lines, downside_lines)
 
   local side_a = upsides
   local side_b = downsides
@@ -41,7 +48,7 @@ return function(_)
     bufpos = window.bufpos,
     window = window,
     positions = positions,
-    lines = window.lines(),
+    lines = lines,
     row_offset = window.first_row - 1
   }
 end
