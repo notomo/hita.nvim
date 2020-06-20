@@ -8,6 +8,70 @@ local callbacks = {}
 M.chars = "asdghklqwertyuopzxcvbnmf0"
 M.cancel_key = "j"
 
+M.set_lines = function(id, bufnr, source, positions, targets)
+  local ns = vim.api.nvim_create_namespace("hita")
+  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+
+  local highlights = {}
+  local lines = {unpack(source.lines)}
+  local children = {}
+  for i, pos in ipairs(positions) do
+    local target = targets[i]
+    if target == nil then
+      break
+    end
+
+    local row = pos.row - source.row_offset
+    local replaced = lines[row]
+    if replaced == nil then
+      break
+    end
+    if pos.column >= 1 then
+      lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + #target + 1, -1)
+    else
+      lines[row] = target .. replaced:sub(#target + 1, -1)
+    end
+
+    table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTarget"})
+
+    local first = target:sub(1, 1)
+    if callbacks[first] == nil then
+      local rhs = ("<Cmd>lua require 'hita/hint'.callback('%s')<CR>"):format(first)
+      vim.api.nvim_buf_set_keymap(bufnr, "n", first, rhs, {noremap = true, nowait = true, silent = true})
+    end
+
+    local child = children[first]
+    if child == nil then
+      child = {positions = {}, targets = {}}
+      children[first] = child
+    end
+
+    if #target >= 2 then
+      table.insert(child.targets, target:sub(2, 2))
+      table.insert(child.positions, pos)
+      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaSecondTarget"})
+      callbacks[first] = function()
+        M.set_lines(id, bufnr, source, child.positions, child.targets)
+      end
+    else
+      callbacks[first] = function()
+        M.close_window(id)
+        vim.api.nvim_set_current_win(source.window.id)
+        vim.api.nvim_command("normal! m'")
+        vim.api.nvim_win_set_cursor(source.window.id, {pos.row, pos.column})
+      end
+    end
+  end
+
+  vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+  vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+
+  for _, hl in ipairs(highlights) do
+    vim.api.nvim_buf_add_highlight(bufnr, ns, hl.group, hl.row, hl.column, hl.column + 1)
+  end
+end
+
 M.start = function(source)
   if #source.positions == 0 then
     return
@@ -40,40 +104,7 @@ M.start = function(source)
   local targets = util.make_hint_targets(M.chars, #source.positions)
 
   callbacks = {}
-
-  local highlights = {}
-  local lines = source.lines
-  for i, pos in ipairs(source.positions) do
-    local target = targets[i]
-    if target == nil then
-      break
-    end
-
-    local row = pos.row - source.row_offset
-    local replaced = lines[row]
-    if replaced == nil then
-      break
-    end
-    if pos.column >= 1 then
-      lines[row] = replaced:sub(1, pos.column) .. target .. replaced:sub(pos.column + #target + 1, -1)
-    else
-      lines[row] = target .. replaced:sub(#target + 1, -1)
-    end
-
-    table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTarget"})
-    if #target >= 2 then
-      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaSecondTarget"})
-    end
-
-    callbacks[target] = function()
-      M.close_window(id)
-      vim.api.nvim_set_current_win(source.window.id)
-      vim.api.nvim_command("normal! m'")
-      vim.api.nvim_win_set_cursor(source.window.id, {pos.row, pos.column})
-    end
-    local rhs = (":<C-u>lua require 'hita/hint'.callback('%s')<CR>"):format(target)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", target, rhs, {noremap = true, nowait = true, silent = true})
-  end
+  M.set_lines(id, bufnr, source, source.positions, targets)
 
   local rhs = (":<C-u>lua require 'hita/hint'.close_window(%s)<CR>"):format(id)
   vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
@@ -85,27 +116,12 @@ M.start = function(source)
     ("autocmd CmdlineEnter <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
   vim.api.nvim_command(on_cmdline_enter)
 
-  local on_move =
-    ("autocmd CursorMoved <buffer=%s> ++once autocmd CursorMoved <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(
-    bufnr,
-    bufnr,
-    id
-  )
-  vim.api.nvim_command(on_move)
-
   local on_buf_leave =
     ("autocmd BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
   vim.api.nvim_command(on_buf_leave)
 
-  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-  vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
   vim.api.nvim_buf_set_option(bufnr, "textwidth", original.textwidth)
-
-  local ns = vim.api.nvim_create_namespace("hita")
-  for _, hl in ipairs(highlights) do
-    vim.api.nvim_buf_add_highlight(bufnr, ns, hl.group, hl.row, hl.column, hl.column + 1)
-  end
 
   local cursor = source.cursor
   vim.api.nvim_win_set_cursor(id, {cursor.row - source.row_offset, cursor.column})
