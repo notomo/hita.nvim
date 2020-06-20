@@ -50,6 +50,24 @@ describe('line source', function ()
     assert.cursor(cursor)
   end)
 
+  it("can be canceled on second character", function()
+    require "hita/hint".chars = "abc"
+    helper.set_lines("1_2_3_4_5")
+
+    local cursor = helper.cursor()
+
+    command("Hita line")
+
+    assert.current_line("1_a_b_cacb")
+    assert.window_count(2)
+
+    helper.input_key("c")
+    helper.input_key("j")
+
+    assert.window_count(1)
+    assert.cursor(cursor)
+  end)
+
   it("cancels on leaving the window", function()
     helper.set_lines("1_2_3_4")
 

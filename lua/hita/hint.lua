@@ -12,6 +12,10 @@ M.set_lines = function(id, bufnr, source, positions, targets)
   local ns = vim.api.nvim_create_namespace("hita")
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
 
+  for _, keymap in ipairs(vim.api.nvim_buf_get_keymap(bufnr, "n")) do
+    vim.api.nvim_buf_del_keymap(bufnr, "n", keymap.lhs)
+  end
+
   local highlights = {}
   local lines = {unpack(source.lines)}
   local children = {}
@@ -51,6 +55,7 @@ M.set_lines = function(id, bufnr, source, positions, targets)
       table.insert(child.positions, pos)
       table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaSecondTarget"})
       callbacks[first] = function()
+        callbacks = {}
         M.set_lines(id, bufnr, source, child.positions, child.targets)
       end
     else
@@ -62,6 +67,9 @@ M.set_lines = function(id, bufnr, source, positions, targets)
       end
     end
   end
+
+  local rhs = ("<Cmd>lua require 'hita/hint'.close_window(%s)<CR>"):format(id)
+  vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
 
   vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
@@ -106,9 +114,6 @@ M.start = function(source)
 
   callbacks = {}
   M.set_lines(id, bufnr, source, source.positions, targets)
-
-  local rhs = (":<C-u>lua require 'hita/hint'.close_window(%s)<CR>"):format(id)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
 
   local on_leave = ("autocmd WinLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
   vim.api.nvim_command(on_leave)
