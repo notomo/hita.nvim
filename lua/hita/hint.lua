@@ -36,8 +36,6 @@ M.set_lines = function(id, bufnr, source, positions, targets)
       lines[row] = target .. replaced:sub(#target + 1, -1)
     end
 
-    table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTarget"})
-
     local first = target:sub(1, 1)
     if callbacks[first] == nil then
       local rhs = ("<Cmd>lua require 'hita/hint'.callback('%s')<CR>"):format(first)
@@ -53,12 +51,14 @@ M.set_lines = function(id, bufnr, source, positions, targets)
     if #target >= 2 then
       table.insert(child.targets, target:sub(2, 2))
       table.insert(child.positions, pos)
-      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaSecondTarget"})
+      table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTwoTargetFirst"})
+      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaTwoTargetSecond"})
       callbacks[first] = function()
         callbacks = {}
         M.set_lines(id, bufnr, source, child.positions, child.targets)
       end
     else
+      table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTarget"})
       callbacks[first] = function()
         M.close_window(id)
         vim.api.nvim_set_current_win(source.window.id)
