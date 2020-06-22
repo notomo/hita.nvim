@@ -131,7 +131,7 @@ M.make_hint_targets = function(chars, positions_count)
   local remaining = positions_count - char_count
 
   local all_chars = vim.split(chars, "")
-  if remaining < 0 then
+  if remaining <= 0 then
     return all_chars
   end
 

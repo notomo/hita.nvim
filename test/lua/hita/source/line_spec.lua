@@ -20,14 +20,29 @@ describe('line source', function ()
     assert.current_char("4")
   end)
 
-  it("can handle two characters target", function()
+  it("can show the number of hints same with hita/hint.chars", function()
     require "hita/hint".chars = "abc"
     helper.set_lines("1_2_3_4")
 
     command("Hita line")
 
     assert.window_count(2)
-    assert.current_line("1_a_b_ca")
+    assert.current_line("1_a_b_c")
+
+    helper.input_key("c")
+
+    assert.window_count(1)
+    assert.current_char("4")
+  end)
+
+  it("can handle two characters target", function()
+    require "hita/hint".chars = "abc"
+    helper.set_lines("1_2_3_4_5")
+
+    command("Hita line")
+
+    assert.window_count(2)
+    assert.current_line("1_a_b_cacb")
 
     helper.input_key("ca")
 
