@@ -6,14 +6,14 @@ return function(_)
 
   local upsides = {}
   local upside_lines = window.upside_lines()
-  for i, line in ipairs(util.slice(vim.fn.reverse(upside_lines), 2)) do
+  for i, line in ipairs({unpack(vim.fn.reverse(upside_lines), 2)}) do
     local row = cursor.row - i
     local column = util.non_space_column(line, window.first_column, window.last_column)
     table.insert(upsides, {row = row, column = column})
   end
 
   local downsides = {}
-  local downside_lines = util.slice(window.downside_lines(), 2)
+  local downside_lines = {unpack(window.downside_lines(), 2)}
   for i, line in ipairs(downside_lines) do
     local row = cursor.row + i
     local column = util.non_space_column(line, window.first_column, window.last_column)

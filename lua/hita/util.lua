@@ -153,12 +153,4 @@ M.make_hint_targets = function(chars, positions_count)
   return targets
 end
 
-M.slice = function(tbl, first, last)
-  local result = {}
-  for i = first or 1, last or #tbl, 1 do
-    result[#result + 1] = tbl[i]
-  end
-  return result
-end
-
 return M

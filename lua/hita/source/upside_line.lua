@@ -6,7 +6,7 @@ return function(_)
 
   local positions = {}
   local lines = window.upside_lines()
-  for i, line in ipairs(util.slice(vim.fn.reverse(lines), 2)) do
+  for i, line in ipairs({unpack(vim.fn.reverse(lines), 2)}) do
     local row = cursor.row - i
     local column = util.non_space_column(line, window.first_column, window.last_column)
     table.insert(positions, {row = row, column = column})
