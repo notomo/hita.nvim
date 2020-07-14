@@ -92,6 +92,14 @@ M.start = function(source)
     listchars = vim.o.listchars
   }
 
+  local win_config = vim.api.nvim_win_get_config(0)
+  local row = source.row
+  local column = source.column
+  if win_config.relative ~= "" then
+    row = row + win_config.row[false]
+    column = column + win_config.col[false]
+  end
+
   local bufnr = vim.api.nvim_create_buf(false, true)
   local id =
     vim.api.nvim_open_win(
@@ -101,8 +109,8 @@ M.start = function(source)
       width = source.width,
       height = source.height,
       relative = "win",
-      row = source.row,
-      col = source.column,
+      row = row,
+      col = column,
       bufpos = source.bufpos,
       external = false,
       style = "minimal"
