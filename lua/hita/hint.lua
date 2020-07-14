@@ -123,16 +123,12 @@ M.start = function(source)
   callbacks = {}
   M.set_lines(id, bufnr, source, source.positions, targets)
 
-  local on_leave = ("autocmd WinLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
+  local on_leave =
+    ("autocmd WinLeave,CmdlineEnter,BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(
+    bufnr,
+    id
+  )
   vim.api.nvim_command(on_leave)
-
-  local on_cmdline_enter =
-    ("autocmd CmdlineEnter <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
-  vim.api.nvim_command(on_cmdline_enter)
-
-  local on_buf_leave =
-    ("autocmd BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
-  vim.api.nvim_command(on_buf_leave)
 
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "textwidth", original.textwidth)
