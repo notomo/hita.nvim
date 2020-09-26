@@ -4,10 +4,7 @@ M.current_window = function()
   local id = 0
 
   local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(id))
-  local cursor = {
-    row = cursor_row,
-    column = cursor_col
-  }
+  local cursor = {row = cursor_row, column = cursor_col}
 
   local view = vim.fn.winsaveview()
   local restore_view = function()
@@ -63,16 +60,14 @@ M.current_window = function()
     end,
     restore_view = restore_view,
     copy_column_view = function()
-      vim.fn.winrestview(
-        {
-          col = view.col,
-          coladd = view.coladd,
-          leftcol = view.leftcol,
-          skipcol = view.skipcol
-        }
-      )
+      vim.fn.winrestview({
+        col = view.col,
+        coladd = view.coladd,
+        leftcol = view.leftcol,
+        skipcol = view.skipcol,
+      })
     end,
-    cursor = cursor
+    cursor = cursor,
   }
 end
 

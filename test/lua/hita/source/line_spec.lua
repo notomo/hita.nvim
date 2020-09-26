@@ -2,7 +2,7 @@ local helper = require "test.helper"
 local assert = helper.assert
 local command = helper.command
 
-describe('line source', function ()
+describe("line source", function()
 
   before_each(helper.before_each)
   after_each(helper.after_each)
@@ -21,7 +21,7 @@ describe('line source', function ()
   end)
 
   it("can show the number of hints same with hita/hint.chars", function()
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("1_2_3_4")
 
     command("Hita line")
@@ -36,7 +36,7 @@ describe('line source', function ()
   end)
 
   it("can handle two characters target", function()
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("1_2_3_4_5")
 
     command("Hita line")
@@ -66,7 +66,7 @@ describe('line source', function ()
   end)
 
   it("can be canceled on second character", function()
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("1_2_3_4_5")
 
     local cursor = helper.cursor()
@@ -150,7 +150,7 @@ describe('line source', function ()
   end)
 
   it("can displays hints on line including multibyte chars", function()
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("ああhoge_foo")
 
     command("Hita line")
@@ -165,7 +165,7 @@ describe('line source', function ()
   end)
 
   it("can displays hints on line including tab chars", function()
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("\t\thoge_foo")
 
     command("Hita line")
@@ -183,7 +183,7 @@ describe('line source', function ()
     vim.wo.signcolumn = "yes:5"
     vim.wo.numberwidth = 4
     vim.wo.number = true
-    require "hita/hint".chars = "abc"
+    require"hita/hint".chars = "abc"
     helper.set_lines("\t\thoge_foo")
 
     command("Hita line")

@@ -7,7 +7,7 @@ M.command = function(cmd)
 end
 
 M.before_each = function()
-  require "hita/hint".chars = "asdghklqwertyuopzxcvbnmf0"
+  require"hita/hint".chars = "asdghklqwertyuopzxcvbnmf0"
   M.command("filetype on")
   M.command("syntax enable")
 end

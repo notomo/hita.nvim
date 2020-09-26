@@ -39,7 +39,11 @@ M.set_lines = function(id, bufnr, source, positions, targets)
     local first = target:sub(1, 1)
     if callbacks[first] == nil then
       local rhs = ("<Cmd>lua require 'hita/hint'.callback('%s')<CR>"):format(first)
-      vim.api.nvim_buf_set_keymap(bufnr, "n", first, rhs, {noremap = true, nowait = true, silent = true})
+      vim.api.nvim_buf_set_keymap(bufnr, "n", first, rhs, {
+        noremap = true,
+        nowait = true,
+        silent = true,
+      })
     end
 
     local child = children[first]
@@ -52,7 +56,11 @@ M.set_lines = function(id, bufnr, source, positions, targets)
       table.insert(child.targets, target:sub(2, 2))
       table.insert(child.positions, pos)
       table.insert(highlights, {row = row - 1, column = pos.column, group = "HitaTwoTargetFirst"})
-      table.insert(highlights, {row = row - 1, column = pos.column + 1, group = "HitaTwoTargetSecond"})
+      table.insert(highlights, {
+        row = row - 1,
+        column = pos.column + 1,
+        group = "HitaTwoTargetSecond",
+      })
       callbacks[first] = function()
         callbacks = {}
         M.set_lines(id, bufnr, source, child.positions, child.targets)
@@ -69,7 +77,11 @@ M.set_lines = function(id, bufnr, source, positions, targets)
   end
 
   local rhs = ("<Cmd>lua require 'hita/hint'.close_window(%s)<CR>"):format(id)
-  vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {noremap = true, nowait = true, silent = true})
+  vim.api.nvim_buf_set_keymap(bufnr, "n", M.cancel_key, rhs, {
+    noremap = true,
+    nowait = true,
+    silent = true,
+  })
 
   vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
@@ -89,7 +101,7 @@ M.start = function(source)
     list = vim.wo.list,
     wrap = vim.wo.wrap,
     textwidth = vim.bo.textwidth,
-    listchars = vim.o.listchars
+    listchars = vim.o.listchars,
   }
 
   local win_config = vim.api.nvim_win_get_config(0)
@@ -101,21 +113,16 @@ M.start = function(source)
   end
 
   local bufnr = vim.api.nvim_create_buf(false, true)
-  local id =
-    vim.api.nvim_open_win(
-    bufnr,
-    true,
-    {
-      width = source.width,
-      height = source.height,
-      relative = "win",
-      row = row,
-      col = column,
-      bufpos = source.bufpos,
-      external = false,
-      style = "minimal"
-    }
-  )
+  local id = vim.api.nvim_open_win(bufnr, true, {
+    width = source.width,
+    height = source.height,
+    relative = "win",
+    row = row,
+    col = column,
+    bufpos = source.bufpos,
+    external = false,
+    style = "minimal",
+  })
   source.window.copy_column_view()
 
   local targets = util.make_hint_targets(M.chars, #source.positions)
@@ -123,11 +130,7 @@ M.start = function(source)
   callbacks = {}
   M.set_lines(id, bufnr, source, source.positions, targets)
 
-  local on_leave =
-    ("autocmd WinLeave,CmdlineEnter,BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(
-    bufnr,
-    id
-  )
+  local on_leave = ("autocmd WinLeave,CmdlineEnter,BufLeave <buffer=%s> ++once lua require 'hita/hint'.close_window(%s)"):format(bufnr, id)
   vim.api.nvim_command(on_leave)
 
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")

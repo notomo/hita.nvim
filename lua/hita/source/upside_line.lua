@@ -29,6 +29,6 @@ return function(_)
     window = window,
     positions = positions,
     lines = lines,
-    row_offset = window.first_row - 1
+    row_offset = window.first_row - 1,
   }
 end
