@@ -4,7 +4,7 @@ endif
 let g:loaded_hita = 1
 
 if get(g:, 'hita_debug', v:false)
-    command! -nargs=* Hita lua require("hita/cleanup")("hita"); require("hita/command").main(<f-args>)
+    command! -nargs=* Hita lua require("hita/lib/cleanup")(); require("hita/command").main(<f-args>)
 else
     command! -nargs=* Hita lua require("hita/command").main(<f-args>)
 endif
