@@ -154,6 +154,7 @@ M.start = function(source)
 
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(bufnr, "textwidth", original.textwidth)
+  vim.api.nvim_buf_set_name(bufnr, "hita://HITA")
 
   local cursor = source.cursor
   vim.api.nvim_win_set_cursor(id, {cursor.row - source.row_offset, cursor.column})
