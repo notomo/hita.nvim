@@ -12,4 +12,3 @@ endif
 highlight default link HitaTarget ErrorMsg
 highlight default link HitaTwoTargetFirst WarningMsg
 highlight default link HitaTwoTargetSecond WarningMsg
-highlight default link HitaBackground Comment

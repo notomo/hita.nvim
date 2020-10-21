@@ -8,6 +8,25 @@ local callbacks = {}
 M.chars = "asdghklqwertyuopzxcvbnmf0"
 M.cancel_key = "j"
 
+local set_backgroud_hl = function(source_window_id)
+  local bg_hl_group = "Normal"
+  if vim.api.nvim_win_get_config(source_window_id).relative ~= "" then
+    bg_hl_group = "NormalFloat"
+  end
+  local guibg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(bg_hl_group)), "bg", "gui")
+  if guibg == "" then
+    guibg = "#334152"
+  end
+
+  local guifg = vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Comment")), "fg", "gui")
+  if guifg == "" then
+    guifg = "#8d9eb2"
+  end
+
+  local cmd = ("highlight! HitaBackground guibg=%s guifg=%s"):format(guibg, guifg)
+  vim.api.nvim_command(cmd)
+end
+
 M.set_lines = function(id, bufnr, source, positions, targets)
   local ns = vim.api.nvim_create_namespace("hita")
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
@@ -138,6 +157,7 @@ M.start = function(source)
 
   local cursor = source.cursor
   vim.api.nvim_win_set_cursor(id, {cursor.row - source.row_offset, cursor.column})
+  set_backgroud_hl(source.window.id)
   vim.api.nvim_win_set_option(id, "winhighlight", "Normal:HitaBackground")
   vim.api.nvim_win_set_option(id, "list", original.list)
   vim.api.nvim_win_set_option(id, "wrap", original.wrap)

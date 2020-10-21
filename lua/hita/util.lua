@@ -1,7 +1,7 @@
 local M = {}
 
 M.current_window = function()
-  local id = 0
+  local id = vim.api.nvim_get_current_win()
 
   local cursor_row, cursor_col = unpack(vim.api.nvim_win_get_cursor(id))
   local cursor = {row = cursor_row, column = cursor_col}
