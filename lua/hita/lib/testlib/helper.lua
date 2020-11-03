@@ -1,6 +1,6 @@
 local M = {}
 
-local root, err = require("hita/lib/path").find_root("hita.nvim")
+local root, err = require("hita/lib/path").find_root("hita/*.lua")
 if err ~= nil then
   error(err)
 end
