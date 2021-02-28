@@ -3,7 +3,7 @@ local hint = require "hita/hint"
 local M = {}
 
 M.parse_args = function(raw_args)
-  args = {source_name = "window_line", window = 0}
+  local args = {source_name = "window_line", window = 0}
 
   if #raw_args == 0 then
     return args
